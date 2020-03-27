@@ -19,8 +19,3 @@ spring:
         password: 123456
         driver-class-name: com.mysql.cj.jdbc.Driver
         type: com.alibaba.druid.pool.DruidDataSource
-
-mybatis:
-  configuration:
-    map-underscore-to-camel-case: true
-    jdbc-type-for-null: NULL

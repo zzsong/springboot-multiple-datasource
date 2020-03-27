@@ -5,9 +5,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
-import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@EnableConfigurationProperties({MybatisProperties.class})
+//@EnableConfigurationProperties(MybatisProperties.class)
 @MapperScan("com.zss.two.mapper")
 public class MybatisConfig {
 
@@ -33,17 +33,27 @@ public class MybatisConfig {
     }
 
 
+
+    @Autowired
+    @Qualifier("coreDataSource")
+    private DataSource coreDataSource;
+
+    @Autowired
+    @Qualifier("scheduleDataSource")
+    private DataSource scheduleDataSource;
+
     @Bean
     public DynamicDataSource dataSource() {
         Map<Object, Object> targetDataSources = new HashMap<>();
-        targetDataSources.put(DataSourceConstants.CORE_DATA_SOURCE, coreDataSource());
-        targetDataSources.put(DataSourceConstants.SCHEDULE_DATA_SOURCE, scheduleDataSource());
+        targetDataSources.put(DataSourceConstants.CORE_DATA_SOURCE, coreDataSource);
+        targetDataSources.put(DataSourceConstants.SCHEDULE_DATA_SOURCE, scheduleDataSource);
 
         DynamicDataSource dataSource = new DynamicDataSource();
+
         //设置数据源映射
         dataSource.setTargetDataSources(targetDataSources);
 ////        设置默认数据源，当无法映射到数据源时会使用默认数据源
-        dataSource.setDefaultTargetDataSource(coreDataSource());
+        dataSource.setDefaultTargetDataSource(coreDataSource);
         dataSource.afterPropertiesSet();
         return dataSource;
     }
@@ -51,10 +61,11 @@ public class MybatisConfig {
      * 根据数据源创建SqlSessionFactory
      */
     @Bean
-    public SqlSessionFactory sqlSessionFactory(DynamicDataSource dataSource, MybatisProperties mybatisProperties) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(DynamicDataSource dataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
-        sessionFactory.setConfiguration(mybatisProperties.getConfiguration());
+        sessionFactory.getObject().getConfiguration().setJdbcTypeForNull(null);
+        sessionFactory.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
         return sessionFactory.getObject();
     }
 
