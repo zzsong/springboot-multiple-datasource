@@ -1,0 +1,26 @@
+server:
+  port: 9000
+spring:
+  devtools:
+    restart:
+      enabled: true
+      additional-paths: src/main/java
+  datasource:
+    druid:
+      core:
+        url: jdbc:mysql:///kc_core?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+        username: root
+        password: 123456
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+      schedule:
+        url: jdbc:mysql:///kc_schedule?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+        username: root
+        password: 123456
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        type: com.alibaba.druid.pool.DruidDataSource
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: NULL
