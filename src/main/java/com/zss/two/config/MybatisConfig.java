@@ -5,7 +5,9 @@ import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.mybatis.spring.annotation.MapperScan;
+import org.mybatis.spring.boot.autoconfigure.MybatisProperties;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,9 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@EnableConfigurationProperties({MybatisProperties.class})
 @MapperScan("com.zss.two.mapper")
 public class MybatisConfig {
-
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.druid.core")
@@ -37,7 +39,7 @@ public class MybatisConfig {
         targetDataSources.put(DataSourceConstants.CORE_DATA_SOURCE, coreDataSource());
         targetDataSources.put(DataSourceConstants.SCHEDULE_DATA_SOURCE, scheduleDataSource());
 
-        DynamicDataSource dataSource = new DynamicDataSource(DataSourceConstants.CORE_DATA_SOURCE);
+        DynamicDataSource dataSource = new DynamicDataSource();
         //设置数据源映射
         dataSource.setTargetDataSources(targetDataSources);
 ////        设置默认数据源，当无法映射到数据源时会使用默认数据源
@@ -49,9 +51,10 @@ public class MybatisConfig {
      * 根据数据源创建SqlSessionFactory
      */
     @Bean
-    public SqlSessionFactory sqlSessionFactory(DynamicDataSource dataSource) throws Exception {
+    public SqlSessionFactory sqlSessionFactory(DynamicDataSource dataSource, MybatisProperties mybatisProperties) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(dataSource);
+        sessionFactory.setConfiguration(mybatisProperties.getConfiguration());
         return sessionFactory.getObject();
     }
 
