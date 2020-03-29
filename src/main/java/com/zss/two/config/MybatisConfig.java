@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-//@EnableConfigurationProperties(MybatisProperties.class)
+//@EnableConfigurationProperties(MybatisProperties.class)//不要使用此公共配置，Configuration会破坏相关dataSource的配置
 @MapperScan("com.zss.two.mapper")
 public class MybatisConfig {
 

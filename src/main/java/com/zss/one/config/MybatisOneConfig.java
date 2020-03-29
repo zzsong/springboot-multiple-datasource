@@ -18,7 +18,7 @@ import javax.sql.DataSource;
         @MapperScan(basePackages = "com.zss.one.mapper.core", sqlSessionTemplateRef = "coreSqlSessionTemplate",sqlSessionFactoryRef = "coreSqlSessionFactory"),
         @MapperScan(basePackages = "com.zss.one.mapper.schedule", sqlSessionTemplateRef = "scheduleSqlSessionTemplate",sqlSessionFactoryRef = "scheduleSqlSessionFactory")
 })
-public class MybatisCoreConfig {
+public class MybatisOneConfig {
 
     @Bean
     @ConfigurationProperties(prefix = "spring.datasource.druid.core")
@@ -30,6 +30,8 @@ public class MybatisCoreConfig {
     public SqlSessionFactory coreSqlSessionFactory(@Qualifier("coreDataSource") DataSource coreDataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(coreDataSource);
+        sessionFactory.getObject().getConfiguration().setJdbcTypeForNull(null);
+        sessionFactory.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
         return sessionFactory.getObject();
     }
 
@@ -50,6 +52,8 @@ public class MybatisCoreConfig {
     public SqlSessionFactory scheduleSqlSessionFactory(@Qualifier("scheduleDataSource") DataSource coreDataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(coreDataSource);
+        sessionFactory.getObject().getConfiguration().setJdbcTypeForNull(null);
+        sessionFactory.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
         return sessionFactory.getObject();
     }
 
