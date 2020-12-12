@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
-@MapperScan("com.zss.two.mapper")
+@MapperScan("com.zss.four.mapper")
 public class MybatisConfig {
 
     @Bean
@@ -45,8 +45,8 @@ public class MybatisConfig {
     @Bean
     public DynamicDataSource dataSource() {
         Map<Object, Object> targetDataSources = new HashMap<>();
-        targetDataSources.put(DataSourceConstants.CORE_DATA_SOURCE, coreDataSource);
-        targetDataSources.put(DataSourceConstants.SCHEDULE_DATA_SOURCE, scheduleDataSource);
+        targetDataSources.put(DataSourceConstants.MASTER_DATA_SOURCE, coreDataSource);
+        targetDataSources.put(DataSourceConstants.SLAVE_DATA_SOURCE, scheduleDataSource);
 
         DynamicDataSource dataSource = new DynamicDataSource();
 

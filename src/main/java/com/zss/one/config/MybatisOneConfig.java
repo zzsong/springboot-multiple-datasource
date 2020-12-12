@@ -15,50 +15,50 @@ import javax.sql.DataSource;
 
 @Configuration
 @MapperScans({
-        @MapperScan(basePackages = "com.zss.one.mapper.core", sqlSessionTemplateRef = "coreSqlSessionTemplate",sqlSessionFactoryRef = "coreSqlSessionFactory"),
-        @MapperScan(basePackages = "com.zss.one.mapper.schedule", sqlSessionTemplateRef = "scheduleSqlSessionTemplate",sqlSessionFactoryRef = "scheduleSqlSessionFactory")
+        @MapperScan(basePackages = "com.zss.one.mapper.master", sqlSessionTemplateRef = "masterSqlSessionTemplate",sqlSessionFactoryRef = "masterSqlSessionFactory"),
+        @MapperScan(basePackages = "com.zss.one.mapper.slave", sqlSessionTemplateRef = "slaveSqlSessionTemplate",sqlSessionFactoryRef = "slaveSqlSessionFactory")
 })
 public class MybatisOneConfig {
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.druid.core")
-    public DataSource coreDataSource(){
+    @ConfigurationProperties(prefix = "spring.datasource.druid.master")
+    public DataSource masterDataSource(){
         return DruidDataSourceBuilder.create().build();
     }
 
     @Bean
-    public SqlSessionFactory coreSqlSessionFactory(@Qualifier("coreDataSource") DataSource coreDataSource) throws Exception {
+    public SqlSessionFactory masterSqlSessionFactory(@Qualifier("masterDataSource") DataSource masterDataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(coreDataSource);
+        sessionFactory.setDataSource(masterDataSource);
         sessionFactory.getObject().getConfiguration().setJdbcTypeForNull(null);
         sessionFactory.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
         return sessionFactory.getObject();
     }
 
     @Bean
-    public SqlSessionTemplate coreSqlSessionTemplate(@Qualifier("coreSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+    public SqlSessionTemplate masterSqlSessionTemplate(@Qualifier("masterSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
 
-    //======schedule========
+    //======slave========
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.druid.schedule")
-    public DataSource scheduleDataSource(){
+    @ConfigurationProperties(prefix = "spring.datasource.druid.slave")
+    public DataSource slaveDataSource(){
         return DruidDataSourceBuilder.create().build();
     }
 
     @Bean
-    public SqlSessionFactory scheduleSqlSessionFactory(@Qualifier("scheduleDataSource") DataSource coreDataSource) throws Exception {
+    public SqlSessionFactory slaveSqlSessionFactory(@Qualifier("slaveDataSource") DataSource slaveDataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(coreDataSource);
+        sessionFactory.setDataSource(slaveDataSource);
         sessionFactory.getObject().getConfiguration().setJdbcTypeForNull(null);
         sessionFactory.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
         return sessionFactory.getObject();
     }
 
     @Bean
-    public SqlSessionTemplate scheduleSqlSessionTemplate(@Qualifier("scheduleSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+    public SqlSessionTemplate slaveSqlSessionTemplate(@Qualifier("slaveSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 

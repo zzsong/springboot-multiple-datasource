@@ -7,14 +7,14 @@ spring:
       additional-paths: src/main/java
   datasource:
     druid:
-      core:
-        url: jdbc:mysql:///kc_core?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+      master:
+        url: jdbc:mysql:///master?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
         username: root
         password: 123456
         driver-class-name: com.mysql.cj.jdbc.Driver
         type: com.alibaba.druid.pool.DruidDataSource
-      schedule:
-        url: jdbc:mysql:///kc_schedule?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
+      slave:
+        url: jdbc:mysql:///slave?characterEncoding=utf-8&serverTimezone=Asia/Shanghai
         username: root
         password: 123456
         driver-class-name: com.mysql.cj.jdbc.Driver

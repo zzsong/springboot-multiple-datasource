@@ -2,6 +2,6 @@ package com.zss.four.config;
 
 public class DataSourceConstants {
 
-    public final static String CORE_DATA_SOURCE = "coreDataSource";
-    public final static String SCHEDULE_DATA_SOURCE = "scheduleDataSource";
+    public final static String MASTER_DATA_SOURCE = "masterDataSource";
+    public final static String SLAVE_DATA_SOURCE = "slaveDataSource";
 }

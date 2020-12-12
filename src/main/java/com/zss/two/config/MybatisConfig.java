@@ -21,39 +21,39 @@ import java.util.Map;
 public class MybatisConfig {
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.druid.core")
-    public DataSource coreDataSource() {
+    @ConfigurationProperties(prefix = "spring.datasource.druid.master")
+    public DataSource masterDataSource() {
         return DruidDataSourceBuilder.create().build();
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.druid.schedule")
-    public DataSource scheduleDataSource() {
+    @ConfigurationProperties(prefix = "spring.datasource.druid.slave")
+    public DataSource slaveDataSource() {
         return DruidDataSourceBuilder.create().build();
     }
 
 
 
     @Autowired
-    @Qualifier("coreDataSource")
-    private DataSource coreDataSource;
+    @Qualifier("masterDataSource")
+    private DataSource masterDataSource;
 
     @Autowired
-    @Qualifier("scheduleDataSource")
-    private DataSource scheduleDataSource;
+    @Qualifier("slaveDataSource")
+    private DataSource slaveDataSource;
 
     @Bean
     public DynamicDataSource dataSource() {
         Map<Object, Object> targetDataSources = new HashMap<>();
-        targetDataSources.put(DataSourceConstants.CORE_DATA_SOURCE, coreDataSource);
-        targetDataSources.put(DataSourceConstants.SCHEDULE_DATA_SOURCE, scheduleDataSource);
+        targetDataSources.put(DataSourceConstants.MASTER_DATA_SOURCE, masterDataSource);
+        targetDataSources.put(DataSourceConstants.SLAVE_DATA_SOURCE, slaveDataSource);
 
         DynamicDataSource dataSource = new DynamicDataSource();
 
         //设置数据源映射
         dataSource.setTargetDataSources(targetDataSources);
 ////        设置默认数据源，当无法映射到数据源时会使用默认数据源
-        dataSource.setDefaultTargetDataSource(coreDataSource);
+        dataSource.setDefaultTargetDataSource(masterDataSource);
         dataSource.afterPropertiesSet();
         return dataSource;
     }

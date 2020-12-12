@@ -1,10 +1,10 @@
 package com.zss.two.manager;
 
-import com.alibaba.fastjson.JSON;
+import com.zss.domain.Member;
 import com.zss.two.config.DataSourceConstants;
 import com.zss.two.config.TargetDataSource;
-import com.zss.two.mapper.core.TwoMemberMapper;
-import com.zss.two.mapper.schedule.TwoJobTaskMapper;
+import com.zss.two.mapper.master.TwoMasterMemberMapper;
+import com.zss.two.mapper.slave.TwoSlaveMemberMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,22 +12,19 @@ import org.springframework.stereotype.Component;
 public class TwoManager {
 
     @Autowired
-    private TwoMemberMapper twoMemberMapper;
+    private TwoMasterMemberMapper twoMasterMemberMapper;
 
     @Autowired
-    private TwoJobTaskMapper twoJobTaskMapper;
+    private TwoSlaveMemberMapper twoSlaveMemberMapper;
 
 
-    @TargetDataSource(DataSourceConstants.CORE_DATA_SOURCE)
-    public void core(){
-        System.out.println("==========core库==========================");
-        System.out.println("==member=====>"+ JSON.toJSONString(twoMemberMapper.queryById(1)));
+    @TargetDataSource(DataSourceConstants.MASTER_DATA_SOURCE)
+    public Member queryMasterById(long id){
+        return twoMasterMemberMapper.queryById(id);
     }
 
-
-    @TargetDataSource(DataSourceConstants.SCHEDULE_DATA_SOURCE)
-    public void schedule(){
-        System.out.println("==========schedule库==========================");
-        System.out.println("==schedule=====>"+ JSON.toJSONString(twoJobTaskMapper.queryById(1)));
+    @TargetDataSource(DataSourceConstants.SLAVE_DATA_SOURCE)
+    public Member querySlaveById(long id){
+        return twoSlaveMemberMapper.queryById(id);
     }
 }

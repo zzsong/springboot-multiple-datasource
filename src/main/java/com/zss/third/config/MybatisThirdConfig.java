@@ -17,13 +17,13 @@ public class MybatisThirdConfig {
 
 
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.druid.core")
-    public DataSource coreDataSource(){
+    @ConfigurationProperties(prefix = "spring.datasource.druid.master")
+    public DataSource masterDataSource(){
         return DruidDataSourceBuilder.create().build();
     }
 
     @Bean
-    public SqlSessionFactory coreSqlSessionFactory(@Qualifier("coreDataSource") DataSource coreDataSource) throws Exception {
+    public SqlSessionFactory masterSqlSessionFactory(@Qualifier("masterDataSource") DataSource coreDataSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
         sessionFactory.setDataSource(coreDataSource);
         sessionFactory.getObject().getConfiguration().setJdbcTypeForNull(null);
@@ -32,50 +32,50 @@ public class MybatisThirdConfig {
     }
 
     @Bean
-    public SqlSessionTemplate coreSqlSessionTemplate(@Qualifier("coreSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+    public SqlSessionTemplate masterSqlSessionTemplate(@Qualifier("masterSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
     @Bean
-    public MapperScannerConfigurer coreMapperScannerConfig(CoreBeanNameGenerator coreBeanNameGenerator){
+    public MapperScannerConfigurer coreMapperScannerConfig(){
         MapperScannerConfigurer configurer = new MapperScannerConfigurer();
-        configurer.setNameGenerator(coreBeanNameGenerator);
-        configurer.setBasePackage("com.zss.third.mapper.core,com.zss.third.mapper.order");
-        configurer.setSqlSessionFactoryBeanName("coreSqlSessionFactory");
-        configurer.setSqlSessionTemplateBeanName("coreSqlSessionTemplate");
+//        configurer.setNameGenerator(slaveBeanNameGenerator); //不指定，使用默认
+        configurer.setBasePackage("com.zss.third.mapper");
+        configurer.setSqlSessionFactoryBeanName("masterSqlSessionFactory");
+        configurer.setSqlSessionTemplateBeanName("masterSqlSessionTemplate");
         return configurer;
     }
 
 
     //======schedule========
     @Bean
-    @ConfigurationProperties(prefix = "spring.datasource.druid.schedule")
-    public DataSource scheduleDataSource(){
+    @ConfigurationProperties(prefix = "spring.datasource.druid.slave")
+    public DataSource slaveDataSource(){
         return DruidDataSourceBuilder.create().build();
     }
 
     @Bean
-    public SqlSessionFactory scheduleSqlSessionFactory(@Qualifier("scheduleDataSource") DataSource coreDataSource) throws Exception {
+    public SqlSessionFactory slaveSqlSessionFactory(@Qualifier("slaveDataSource") DataSource slaveDateSource) throws Exception {
         SqlSessionFactoryBean sessionFactory = new SqlSessionFactoryBean();
-        sessionFactory.setDataSource(coreDataSource);
+        sessionFactory.setDataSource(slaveDateSource);
         sessionFactory.getObject().getConfiguration().setJdbcTypeForNull(null);
         sessionFactory.getObject().getConfiguration().setMapUnderscoreToCamelCase(true);
         return sessionFactory.getObject();
     }
 
     @Bean
-    public SqlSessionTemplate scheduleSqlSessionTemplate(@Qualifier("scheduleSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+    public SqlSessionTemplate slaveSqlSessionTemplate(@Qualifier("slaveSqlSessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
 
     @Bean
-    public MapperScannerConfigurer scheduleMapperScannerConfig(ScheduleBeanNameGenerator scheduleBeanNameGenerator){
+    public MapperScannerConfigurer slaveMapperScannerConfig(SlaveBeanNameGenerator slaveBeanNameGenerator){
         MapperScannerConfigurer configurer = new MapperScannerConfigurer();
-        configurer.setNameGenerator(scheduleBeanNameGenerator);
-        configurer.setBasePackage("com.zss.third.mapper.schedule,com.zss.third.mapper.order");
-        configurer.setSqlSessionFactoryBeanName("scheduleSqlSessionFactory");
-        configurer.setSqlSessionTemplateBeanName("scheduleSqlSessionTemplate");
+        configurer.setNameGenerator(slaveBeanNameGenerator);
+        configurer.setBasePackage("com.zss.third.mapper");
+        configurer.setSqlSessionFactoryBeanName("slaveSqlSessionFactory");
+        configurer.setSqlSessionTemplateBeanName("slaveSqlSessionTemplate");
         return configurer;
     }
 }

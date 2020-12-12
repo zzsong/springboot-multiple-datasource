@@ -7,9 +7,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 
 @Component
-public class CoreBeanNameGenerator implements BeanNameGenerator {
+public class SlaveBeanNameGenerator implements BeanNameGenerator {
     @Override
     public String generateBeanName(BeanDefinition definition, BeanDefinitionRegistry registry) {
-        return "core"+ ClassUtils.getShortName(definition.getBeanClassName());
+        return "slave"+ ClassUtils.getShortName(definition.getBeanClassName());
     }
 }

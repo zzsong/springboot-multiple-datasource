@@ -9,7 +9,7 @@ public class DataSourceContextHolder  implements AutoCloseable {
 
     public static String getDataSourceName(){
         String key = dataSourceKeyThreadLocal.get();
-        return StringUtils.isBlank(key) ? DataSourceConstants.CORE_DATA_SOURCE:key;
+        return StringUtils.isBlank(key) ? DataSourceConstants.MASTER_DATA_SOURCE:key;
     }
 
     public DataSourceContextHolder(String key){
